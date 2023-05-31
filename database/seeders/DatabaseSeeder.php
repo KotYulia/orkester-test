@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         if(env('APP_ENV', 'prod') === 'local'){
-            $this->call(UserSeeder::class);
+            $this->call(AdminUserSeeder::class);
         }
     }
 }

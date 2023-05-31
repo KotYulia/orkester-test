@@ -7,8 +7,9 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
-class UserSeeder extends Seeder
+class AdminUserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,9 +18,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Admin User',
+        $user = User::factory()->create([
+            'name' => 'Admin',
             'email' => 'admin@local.host'
         ]);
+        $role = Role::create(['name' => 'Admin']);
+        $user->assignRole($role);
     }
 }
