@@ -8,6 +8,7 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
@@ -21,7 +22,11 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $navigationGroup = 'Settings';
 
     public static function form(Form $form): Form
     {
@@ -42,6 +47,14 @@ class UserResource extends Resource
                         ->dehydrated(fn ($state) => filled($state))
                         ->required(fn (Page $livewire) => ($livewire instanceof CreateUser))
                         ->maxLength(255),
+                    Select::make('roles')
+                        ->multiple()
+                        ->relationship('roles', 'name')
+                        ->preload(),
+                    Select::make('permissions')
+                        ->multiple()
+                        ->relationship('permissions', 'name')
+                        ->preload()
                 ])->columns(2)
             ]);
     }
@@ -50,20 +63,20 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('email'),
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime(),
+                    ->dateTime('d-M-Y')
+                    ->sortable()
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
