@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Pages\News;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,3 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('admin/news/sync', [News::class, 'sync'])->name('filament.pages.news.sync');
