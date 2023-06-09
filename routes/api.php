@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Rest\UserController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Rest\NewsController;
+use App\Http\Controllers\Rest\UserController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,12 +16,11 @@ use App\Http\Controllers\Rest\NewsController;
 |
 */
 
-Route::post('/user/create', [UserController::class, 'register'])->name('create_user');
-Route::post('login', [UserController::class, 'login'])->name('user_login');
+Route::post('register', [AuthController::class, 'register'])->name('create_user');
+Route::post('login', [AuthController::class, 'login'])->name('user_login');
 
-Route::group(['middleware' => ['auth:api']], function () {
-    Route::post('/user/update', [UserController::class, 'update'])->name('update_user_info');
-    Route::post('/user/change-password', [UserController::class, 'changePassword'])->name('change_password');
-    Route::post('logout', [UserController::class, 'logout'])->name('user_logout');
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::patch('/user/update', [UserController::class, 'update'])->name('update_user_info');
+    Route::post('logout', [AuthController::class, 'logout'])->name('user_logout');
     Route::get('news', [NewsController::class, 'index'])->name('all_news');
 });

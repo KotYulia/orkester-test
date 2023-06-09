@@ -43,9 +43,9 @@ class UserResource extends Resource
                     Forms\Components\DateTimePicker::make('email_verified_at'),
                     Forms\Components\TextInput::make('password')
                         ->password()
+                        ->required()
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                         ->dehydrated(fn ($state) => filled($state))
-                        ->required(fn (Page $livewire) => ($livewire instanceof CreateUser))
                         ->maxLength(255),
                     Select::make('roles')
                         ->multiple()

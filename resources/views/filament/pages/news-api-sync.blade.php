@@ -1,11 +1,23 @@
 @php use App\Models\News; @endphp
 <x-filament::page>
+    @if (count($errors) > 0)
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger text-danger-600">
+                    @foreach($errors->all() as $error)
+                        {{ $error }} <br>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
     <form method="POST" action="{{ route('filament.pages.news.sync') }}">
         @csrf
         @method('POST')
         <div class="grid grid-cols-1   lg:grid-cols-2   filament-forms-component-container gap-6">
             <input type="text"
                    name="country_code"
+                   required
                    class="filament-forms-input block w-full transition duration-75 rounded-lg shadow-sm outline-none focus:ring-1 focus:ring-inset disabled:opacity-70 border-gray-300 focus:border-primary-500 focus:ring-primary-500"
                    placeholder="Code of the country you want to get headlines for">
             <button type="submit"
