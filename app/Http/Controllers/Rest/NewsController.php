@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Rest;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\NewsResource;
 use App\Models\News;
-use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
-    public function index(): \Illuminate\Database\Eloquent\Collection
+    public function index(): NewsResource
     {
-        return News::all()->sortByDesc("published_at");
+        return new NewsResource(News::all()->sortByDesc("published_at"));
     }
 }

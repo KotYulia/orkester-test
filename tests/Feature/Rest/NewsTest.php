@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Rest;
 
+use App\Models\News;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
@@ -13,11 +14,31 @@ class NewsTest extends TestCase
 
     public function test_all_news()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $response = $this->get(route('all_news'));
-        $response->assertStatus(Response::HTTP_OK);
+        $user = User::factory()->create(['email' => 'test@gmail.com', 'password' => 'password']);
+        News::create([
+            'source_id' => 'test',
+            'source_name' => 'Test',
+            'author' => 'Name',
+            'title' => 'Test title',
+            'description' => 'Test description',
+            'url' => 'https://www.test.com',
+            'urlToImage' => 'https://www.test.com/image.jpeg',
+            'content' => 'Test content',
+            'published_at' => now(),
+        ]);
+        $response =  $this->actingAs($user, 'sanctum')
+            ->get(route('all_news'));
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'source_id' => 'test',
+                'source_name' => 'Test',
+                'author' => 'Name',
+                'title' => 'Test title',
+                'description' => 'Test description',
+                'url' => 'https://www.test.com',
+                'urlToImage' => 'https://www.test.com/image.jpeg',
+                'content' => 'Test content'
+            ]);
     }
 
     public function test_all_news_for_not_authenticated_user()

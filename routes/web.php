@@ -1,6 +1,6 @@
 <?php
 
-use App\Filament\Pages\News;
+use App\Filament\Pages\NewsApiSync;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('admin/news/sync', [News::class, 'sync'])->name('filament.pages.news.sync');
+Route::post('admin/news/sync', [NewsApiSync::class, 'sync'])->name('filament.pages.news.sync');

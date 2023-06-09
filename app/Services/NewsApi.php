@@ -6,18 +6,18 @@ use App\Models\News;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\TransferException;
+use Illuminate\Validation\ValidationException;
 
 class NewsApi implements \App\Contracts\NewsApi
 {
-
     private string $api_key;
 
     private string $api_url;
 
     public function __construct()
     {
-        $this->api_key = env('NEWSAPI_KEY');
-        $this->api_url = env('NEWSAPI_URL');
+        $this->api_key = config('external-apis.news_api.key');
+        $this->api_url = config('external-apis.news_api.url');
     }
 
     /**
@@ -34,7 +34,7 @@ class NewsApi implements \App\Contracts\NewsApi
             $response = $client->request('GET', $news_url, [
                 'headers' => [
                     'Accept' => 'application/json',
-                    "Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8;",
+                    'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8;',
                 ],
             ]);
 
@@ -59,9 +59,12 @@ class NewsApi implements \App\Contracts\NewsApi
                         $new_article->save();
                     }
                 }
+                return true;
+            } elseif ($result->totalResults === 0) {
+                throw ValidationException::withMessages(['Country code is incorrect']);
+            } else {
+                throw ValidationException::withMessages(['Your API key is invalid or incorrect.']);
             }
-
-            return true;
         } catch (TransferException $e) {
             return $e->getMessage();
         }
